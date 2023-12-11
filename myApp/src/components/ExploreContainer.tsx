@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import './ExploreContainer.css';
-import { IonContent, IonItem, IonLabel } from '@ionic/react';
+import { IonContent, IonItem, IonLabel, IonList } from '@ionic/react';
 
 type Product = {
   id:number;
@@ -9,26 +9,32 @@ type Product = {
 }
 
 const ExploreContainer: React.FC  = () => {
-  const [dados,setDados] = useState<Product[]>([]);
-  
-  useEffect(()=>{
-    fetch('http://petstore-demo-endpoint.execute-api.com/petstore/pets')
-    .then(response => response.json())
-    .then(data => {setDados(data)});
+  let [dados,setDados] = useState<Product[]>([]);
+
+  useEffect (() => {
+    const fetchData = async () => {
+      const response = await fetch('http://petstore-demo-endpoint.execute-api.com/petstore/pets')
+      const myJson = response.json()
+      .catch()
+      setDados(await myJson) 
+      
+    }
+    fetchData()
   }, [])
 
   return(
-    <ul>
+    <IonContent>
         {dados.map(item => {
           return (
-            <li key={item.id}>
-              <p>Id: {item.id}</p>
-              <p>Type: {item.type}</p>
-              <p>Price: {item.price}</p>
-            </li>
+            <IonList key={item.id}>
+              <IonLabel>Id: {item.id}</IonLabel>
+              <IonLabel>Type: {item.type}</IonLabel>
+              <IonLabel>Price: {item.price}</IonLabel>
+            </IonList>
           )
         })}
-      </ul>
+        
+    </IonContent>
   );
    
 };
